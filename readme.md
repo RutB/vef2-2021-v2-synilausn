@@ -1,5 +1,7 @@
 # Sýnilausn á verkefni 2 í vef2 2021
 
+[Yfirferð á sýnilausn](https://youtu.be/jxKehIRjWa0).
+
 Keyrt með:
 
 ```bash

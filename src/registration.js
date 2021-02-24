@@ -53,7 +53,7 @@ const validationMiddleware = [
     .matches(new RegExp(nationalIdPattern))
     .withMessage('Kennitala verður að vera á formi 000000-0000 eða 0000000000'),
   body('comment')
-    .isLength({ max: 128 })
+    .isLength({ max: 400 })
     .withMessage('Athugasemd má að hámarki vera 400 stafir'),
 ];
 
