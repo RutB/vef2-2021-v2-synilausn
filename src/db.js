@@ -29,6 +29,9 @@ export async function query(_query, values = []) {
   try {
     const result = await client.query(_query, values);
     return result;
+  } catch (e) {
+    console.error('Error selecting', e);
+    return e;
   } finally {
     client.release();
   }
@@ -71,21 +74,38 @@ export async function insert({
  *
  * @returns {Promise<Array<list>>} Promise, resolved to array of all registrations.
  */
-export async function list() {
-  let result = [];
+export async function list(low, high) {
+  let data = await query(`SELECT * FROM signatures ORDER BY signed DESC LIMIT ${low} OFFSET ${high};`);
+  data = data.rows;
   try {
-    const queryResult = await query(
-      'SELECT name, nationalId, comment, anonymous, signed FROM signatures ORDER BY signed DESC',
-    );
-
-    if (queryResult && queryResult.rows) {
-      result = queryResult.rows;
-    }
+    return data;
   } catch (e) {
-    console.error('Error selecting signatures', e);
+    // eslint-disable-next-line no-console
+    console.log(e);
   }
+  return 'No Data';
+}
 
-  return result;
+export async function deleteRow(id) {
+  const q = `
+    DELETE FROM todos WHERE id = $1`;
+
+  const result = await query(q, [id]);
+
+  // true ef færslu eytt, annars false
+  return result.rowCount === 1;
+}
+
+
+export async function getTotalOfRow() {
+  const data = await query('SELECT COUNT(*) FROM signatures');
+  try {
+    return data;
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.log(e);
+  }
+  return 'No Data';
 }
 
 // Helper to remove pg from the event loop

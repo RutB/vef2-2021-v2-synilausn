@@ -1,5 +1,6 @@
-import { readFile } from 'fs/promises';
+import { readFile} from 'fs/promises';
 import { query, end } from './db.js';
+import faker from 'faker';
 
 const schemaFile = './sql/schema.sql';
 

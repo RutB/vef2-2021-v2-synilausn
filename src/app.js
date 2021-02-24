@@ -2,10 +2,14 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 import express from 'express';
+import session from 'express-session';
 import dotenv from 'dotenv';
 import { format } from 'date-fns';
 
+import passport from './adminSess.js';
+
 import { router as registrationRouter } from './registration.js';
+import { router as adminRouter } from './adminSess.js';
 
 dotenv.config();
 
@@ -17,6 +21,7 @@ const app = express();
 
 // Sér um að req.body innihaldi gögn úr formi
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 const path = dirname(fileURLToPath(import.meta.url));
 
@@ -24,6 +29,15 @@ app.use(express.static(join(path, '../public')));
 
 app.set('views', join(path, '../views'));
 app.set('view engine', 'ejs');
+const sessionSecret = 'leyndarmál';
+
+
+app.use(session({
+  secret: sessionSecret,
+  resave: false,
+  saveUninitialized: false,
+  maxAge: 50 * 1000, // 20 sek
+}));
 
 /**
  * Hjálparfall til að athuga hvort reitur sé gildur eða ekki.
@@ -52,7 +66,12 @@ app.locals.formatDate = (str) => {
   return date;
 };
 
+
+
+app.use(passport.initialize());
+app.use(passport.session());
 app.use('/', registrationRouter);
+app.use('/admin', adminRouter);
 
 /**
  * Middleware sem sér um 404 villur.
@@ -62,11 +81,14 @@ app.use('/', registrationRouter);
  * @param {function} next Næsta middleware
  */
 // eslint-disable-next-line no-unused-vars
-function notFoundHandler(req, res, next) {
-  const title = 'Síða fannst ekki';
-  res.status(404).render('error', { title });
+// function notFoundHandler(req, res, next) {
+//   const title = 'Síða fannst ekki';
+//   res.status(404).render('error', { title });
+// }
+function notFoundHandler(error, req, res, next) { // eslint-disable-line
+  console.log(error);
+  res.status(404).json({ error: 'Not found' });
 }
-
 /**
  * Middleware sem sér um villumeðhöndlun.
  *
@@ -76,11 +98,16 @@ function notFoundHandler(req, res, next) {
  * @param {function} next Næsta middleware
  */
 // eslint-disable-next-line no-unused-vars
-function errorHandler(err, req, res, next) {
+function errorHandler(err, req, res, next) { // eslint-disable-line
   console.error(err);
-  const title = 'Villa kom upp';
-  res.status(500).render('error', { title });
+
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    return res.status(400).json({ error: 'Invalid json' });
+  }
+
+  return res.status(500).json({ error: 'Internal server error' });
 }
+
 
 app.use(notFoundHandler);
 app.use(errorHandler);

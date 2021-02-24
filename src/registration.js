@@ -2,19 +2,21 @@ import express from 'express';
 import { body, validationResult } from 'express-validator';
 import xss from 'xss';
 
-import { list, insert } from './db.js';
+import { list, insert, getTotalOfRow } from './db.js';  //bæta við total
+import { catchErrors, PAGE_SIZE} from './utils.js' //pagingInfo
 
 export const router = express.Router();
 
+let selfPage = 0;
 /**
  * Higher-order fall sem umlykur async middleware með villumeðhöndlun.
- *
- * @param {function} fn Middleware sem grípa á villur fyrir
- * @returns {function} Middleware með villumeðhöndlun
- */
-function catchErrors(fn) {
-  return (req, res, next) => fn(req, res, next).catch(next);
-}
+//  *
+//  * @param {function} fn Middleware sem grípa á villur fyrir
+//  * @returns {function} Middleware með villumeðhöndlun
+//  */
+// function catchErrors(fn) {
+//   return (req, res, next) => fn(req, res, next).catch(next);
+// }
 
 async function index(req, res) {
   const errors = [];
@@ -24,13 +26,16 @@ async function index(req, res) {
     anonymous: false,
     comment: '',
   };
+  const total = await getTotalOfRow();
 
-  const registrations = await list();
+  const registrations = await list(50,0);
 
   res.render('index', {
-    errors, formData, registrations,
+    errors, formData, registrations, total, selfPage
   });
 }
+
+
 
 const nationalIdPattern = '^[0-9]{6}-?[0-9]{4}$';
 
@@ -73,12 +78,14 @@ async function validationCheck(req, res, next) {
   const formData = {
     name, nationalId, comment, anonymous,
   };
-  const registrations = await list();
+  const total = await getTotalOfRow();
+
+  const registrations = await list(50,0);
 
   const validation = validationResult(req);
 
   if (!validation.isEmpty()) {
-    return res.render('index', { formData, errors: validation.errors, registrations });
+    return res.render('index', { formData, errors: validation.errors, registrations, total, selfPage });
   }
 
   return next();

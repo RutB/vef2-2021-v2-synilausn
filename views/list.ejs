@@ -1,7 +1,7 @@
 
 <section class="registrations">
   <h2 class="registrations__title">Undirskriftir</h2>
-
+    <p class= "totalRows"> Fjöldi undirskrifta: <%= total.rows[0].count%></p>
   <% if (registrations.length === 0) { %>
     <p class="registrations__empty">Engar undirskriftir.</p>
   <% } else { %>

@@ -1,3 +1,17 @@
     </main>
-  </body>
+
+  <% if(parseInt(selfPage) === 0) { %>
+    <p>Fyrri síða</p>
+  <% } else { %>
+    <a href="/<%= parseInt(selfPage) - 1 %>">Fyrri síða</a>
+  <% } %>
+  <p>Síða: <%= (parseInt(selfPage)+1) + ' af ' + Math.round(total.rows[0].count/50) %>   </p>
+  <% if((Math.round(total.rows[0].count/50)-1) <= (selfPage)) { %>
+    <p>Engar fleiri síður</p>
+  <% } else { %>
+    <a href="/<%= parseInt(selfPage) + 1 %>">Næsta síða</a>
+  <% } %>
+  </div>
+
+</body>
 </html>
