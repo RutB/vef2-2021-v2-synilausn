@@ -1,7 +1,13 @@
 <%- include('header') -%>
 
 <h1>Undir&shy;skriftar&shy;listi — umsjón</h1>
-
+<div class="admin">
+    <div class="admin-loggedIn">
+        <p>Innskráður sem: </p>
+        <p class="admin-user"><%= locals.user.username %></p>
+    </div>
+    <a href="admin/logout">Útskrá</a>
+</div>
 
 <%- include('list') -%>
 

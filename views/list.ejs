@@ -10,15 +10,28 @@
         <th>Dags</th>
         <th>Nafn</th>
         <th>Athugasemd</th>
+        <% if (locals.user) { %>
+          <th>Eyða</th>
+        <% } %>
       </tr>
       <% registrations.forEach((row) => { %>
         <tr>
           <td class="date"><%= formatDate(row.signed) %></td>
           <td class="name"><%= row.anonymous ? 'Nafnlaust' : row.name %></td>
           <td class="comment"><%= row.comment %></td>
+
+          <% if (locals.user) { %>
+            <td>
+              <form method="post" action="/admin/delete">
+                <input type="hidden" name="id" value="<%= row.id %>">
+                <button>Eyða</button>
+              </form>
+            </td>
+          <% } %>
         </tr>
       <% }) %>
       </tr>
     </table>
   <% } %>
 </section>
+

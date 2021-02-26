@@ -3,7 +3,7 @@ import { body, validationResult } from 'express-validator';
 import xss from 'xss';
 
 import { list, insert, getTotalOfRow } from './db.js';  //bæta við total
-import { catchErrors, PAGE_SIZE} from './utils.js' //pagingInfo
+import { catchErrors} from './utils.js' //pagingInfo
 
 export const router = express.Router();
 
@@ -19,20 +19,90 @@ let selfPage = 0;
 // }
 
 async function index(req, res) {
+  let { page = 1 } = req.query;
+  page = Number(page);
+
+
+  const PAGE_SIZE = 50;
+  const offset = (page - 1) * PAGE_SIZE;
+  const registrations = await list(offset, PAGE_SIZE);
+  const total = await getTotalOfRow();
   const errors = [];
+  const paging = {
+    links: {
+      self: {
+        href: `/?page=${page}`,
+      },
+    },
+    items: registrations,
+  };
+
+  if (offset > 0) {
+    paging.links.prev = {
+      href: `/?page=${page - 1}`,
+    };
+  }
+
+  if (registrations.length <= PAGE_SIZE) {
+    paging.links.next = {
+      href: `/?page=${page + 1}`,
+    };
+  }
   const formData = {
+    paging: paging.links,
+    page,
     name: '',
     nationalId: '',
     anonymous: false,
     comment: '',
   };
+
+  return res.render('index', {
+    errors, formData, registrations, total
+  });
+}
+async function admin(req, res) {
+  let { page = 1 } = req.query;
+  page = Number(page);
+
+
+  const PAGE_SIZE = 50;
+  const offset = (page - 1) * PAGE_SIZE;
+  const registrations = await list(offset, PAGE_SIZE);
+
   const total = await getTotalOfRow();
 
-  const registrations = await list(50,0);
+  const paging = {
+    links: {
+      self: {
+        href: `/?page=${page}`,
+      },
+    },
+    items: registrations,
+  };
 
-  res.render('index', {
-    errors, formData, registrations, total, selfPage
-  });
+  if (offset > 0) {
+    paging.links.prev = {
+      href: `//?page=${page - 1}`,
+    };
+  }
+
+  if (registrations.length <= PAGE_SIZE) {
+    paging.links.next = {
+      href: `/?page=${page + 1}`,
+    };
+  }
+  const errors = [];
+  const formData = {
+    paging: paging.links,
+    page,
+    name: '',
+    comment: '',
+    nationalId: '',
+    anonymous: false,
+  };
+
+  return res.render('index', { errors, formData, total, registrations});
 }
 
 
@@ -80,7 +150,7 @@ async function validationCheck(req, res, next) {
   };
   const total = await getTotalOfRow();
 
-  const registrations = await list(50,0);
+  const registrations = await list(0, 50);
 
   const validation = validationResult(req);
 

@@ -2,23 +2,22 @@
 
 <h1>Innskráning</h1>
 
+<form method="post" action="/admin/login">
 
-
-<form method="post" action="/login" enctype="application/x-www-form-urlencoded">
-
-    <div class="field<%= locals.isInvalid('username', errors) ?  ' field--invalid' : '' %>">
-      <label for="username">Nafn*</label>
-      <input type="text" name="username" id="username" value="" class="">
-    </div>
-
-    <div class="field<%= locals.isInvalid('password', errors) ?  ' field--invalid' : '' %>">
-      <label for="password">Lykilorð*</label>
-      <input type="text" name="password" id="password" value="" class="">
-    </div>
-
-    <button>Innskrá</button>
+      <label class = "something">Nafn*
+        <input type="text" name="username" id="username" class="something">
+      </label>
+      <label class = "something">Lykilorð*
+        <input type="password" name="password" id="password" class="something">
+      </label>
+      <button>Innskrá</button>
   </form>
 
+  <% if (message) { %>
+    <div class="errors">
+      <p><%= message %></p>
+    </div>
+  <% } %>
 <a href="/">Til baka</a>
 
-<%- include('footer') -%>
+

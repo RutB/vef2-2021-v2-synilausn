@@ -74,8 +74,8 @@ export async function insert({
  *
  * @returns {Promise<Array<list>>} Promise, resolved to array of all registrations.
  */
-export async function list(low, high) {
-  let data = await query(`SELECT * FROM signatures ORDER BY signed DESC LIMIT ${low} OFFSET ${high};`);
+export async function list(offset, limit) {
+  let data = await query(`SELECT * FROM signatures ORDER BY signed DESC LIMIT ${limit} OFFSET ${offset};`);
   data = data.rows;
   try {
     return data;
@@ -87,15 +87,10 @@ export async function list(low, high) {
 }
 
 export async function deleteRow(id) {
-  const q = `
-    DELETE FROM todos WHERE id = $1`;
+  const q = 'DELETE FROM signatures WHERE id = $1';
 
-  const result = await query(q, [id]);
-
-  // true ef færslu eytt, annars false
-  return result.rowCount === 1;
+  return query(q, id);
 }
-
 
 export async function getTotalOfRow() {
   const data = await query('SELECT COUNT(*) FROM signatures');
