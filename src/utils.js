@@ -8,3 +8,4 @@ export function catchErrors(fn) {
   return (req, res, next) => fn(req, res, next).catch(next);
 }
 
+export const PAGE_SIZE = 50;

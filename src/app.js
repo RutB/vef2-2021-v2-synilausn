@@ -5,16 +5,15 @@ import express from 'express';
 import session from 'express-session';
 import dotenv from 'dotenv';
 import { format } from 'date-fns';
-
-import passport from './adminSess.js';
+import passport, { router as adminRouter } from './admin.js';
 
 import { router as registrationRouter } from './registration.js';
-import { router as adminRouter } from './adminSess.js';
 
 dotenv.config();
 
 const {
   PORT: port = 3000,
+  SESSION_SECRET: sessionSecret,
 } = process.env;
 
 const app = express();
@@ -29,8 +28,6 @@ app.use(express.static(join(path, '../public')));
 
 app.set('views', join(path, '../views'));
 app.set('view engine', 'ejs');
-const sessionSecret = 'leyndarmál';
-
 
 app.use(session({
   secret: sessionSecret,
@@ -66,8 +63,6 @@ app.locals.formatDate = (str) => {
   return date;
 };
 
-
-
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/', registrationRouter);
@@ -86,7 +81,6 @@ app.use('/admin', adminRouter);
 //   res.status(404).render('error', { title });
 // }
 function notFoundHandler(error, req, res, next) { // eslint-disable-line
-  console.log(error);
   res.status(404).json({ error: 'Not found' });
 }
 /**
@@ -99,7 +93,6 @@ function notFoundHandler(error, req, res, next) { // eslint-disable-line
  */
 // eslint-disable-next-line no-unused-vars
 function errorHandler(err, req, res, next) { // eslint-disable-line
-  console.error(err);
 
   if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
     return res.status(400).json({ error: 'Invalid json' });
@@ -107,7 +100,6 @@ function errorHandler(err, req, res, next) { // eslint-disable-line
 
   return res.status(500).json({ error: 'Internal server error' });
 }
-
 
 app.use(notFoundHandler);
 app.use(errorHandler);

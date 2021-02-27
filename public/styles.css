@@ -20,18 +20,19 @@ html {
 
   box-sizing: border-box;
 
-  font-family: 'Georgia', serif;
+  font-family: "Georgia", serif;
   font-size: 20px;
 }
 
 input,
 textarea,
 button {
-  font-family: 'Georgia', sans-serif;
+  font-family: "Georgia", sans-serif;
   font-size: 20px;
 }
 
-h1, h2 {
+h1,
+h2 {
   margin: 0;
   font-size: 3rem;
   font-weight: bold;
@@ -64,14 +65,14 @@ h2 {
   text-align: center;
 }
 
-form {
+.form {
   display: flex;
   flex-direction: column;
   align-items: center;
 
   margin-bottom: 2rem;
   padding-bottom: 2rem;
-  border-bottom: 2px dotted var(--color-accent)
+  border-bottom: 2px dotted var(--color-accent);
 }
 
 .field {
@@ -117,6 +118,7 @@ form {
   display: flex;
   justify-content: center;
   padding: 4px;
+  width: 30%;
 }
 
 .field--checkbox label {
@@ -142,6 +144,19 @@ button {
 }
 
 button:hover {
+  background-color: var(--color-accent);
+}
+.button__delete {
+  width: 100%;
+  font-size: 1rem;
+  max-width: 100px;
+  border: 1px solid var(--color-accent);
+  border-radius: 8px;
+  padding: 0.5rem;
+  background-color: #fff;
+  transition: background-color ease-in 300ms;
+}
+.button__delete:hover {
   background-color: var(--color-accent);
 }
 
@@ -186,4 +201,31 @@ button:hover {
   min-width: 150px;
   word-break: break-all;
   overflow-wrap: anywhere;
+}
+
+.footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+  justify-self: center;
+}
+
+.footer p {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.totalRows {
+  margin-bottom: 1rem;
+}
+
+.admin__field {
+  display: flex;
+  flex-direction: row;
+}
+
+.admin__field p {
+  padding-right: 0.5rem;
 }

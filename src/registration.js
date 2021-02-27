@@ -2,12 +2,12 @@ import express from 'express';
 import { body, validationResult } from 'express-validator';
 import xss from 'xss';
 
-import { list, insert, getTotalOfRow } from './db.js';  //bæta við total
-import { catchErrors} from './utils.js' //pagingInfo
+import { list, insert, getTotalOfRow } from './db.js'; // bæta við total
+import { catchErrors, PAGE_SIZE } from './utils.js'; // pagingInfo
 
 export const router = express.Router();
 
-let selfPage = 0;
+const selfPage = 0;
 /**
  * Higher-order fall sem umlykur async middleware með villumeðhöndlun.
 //  *
@@ -22,8 +22,6 @@ async function index(req, res) {
   let { page = 1 } = req.query;
   page = Number(page);
 
-
-  const PAGE_SIZE = 50;
   const offset = (page - 1) * PAGE_SIZE;
   const registrations = await list(offset, PAGE_SIZE);
   const total = await getTotalOfRow();
@@ -58,54 +56,9 @@ async function index(req, res) {
   };
 
   return res.render('index', {
-    errors, formData, registrations, total
+    errors, formData, registrations, total,
   });
 }
-async function admin(req, res) {
-  let { page = 1 } = req.query;
-  page = Number(page);
-
-
-  const PAGE_SIZE = 50;
-  const offset = (page - 1) * PAGE_SIZE;
-  const registrations = await list(offset, PAGE_SIZE);
-
-  const total = await getTotalOfRow();
-
-  const paging = {
-    links: {
-      self: {
-        href: `/?page=${page}`,
-      },
-    },
-    items: registrations,
-  };
-
-  if (offset > 0) {
-    paging.links.prev = {
-      href: `//?page=${page - 1}`,
-    };
-  }
-
-  if (registrations.length <= PAGE_SIZE) {
-    paging.links.next = {
-      href: `/?page=${page + 1}`,
-    };
-  }
-  const errors = [];
-  const formData = {
-    paging: paging.links,
-    page,
-    name: '',
-    comment: '',
-    nationalId: '',
-    anonymous: false,
-  };
-
-  return res.render('index', { errors, formData, total, registrations});
-}
-
-
 
 const nationalIdPattern = '^[0-9]{6}-?[0-9]{4}$';
 
@@ -155,7 +108,9 @@ async function validationCheck(req, res, next) {
   const validation = validationResult(req);
 
   if (!validation.isEmpty()) {
-    return res.render('index', { formData, errors: validation.errors, registrations, total, selfPage });
+    return res.render('index', {
+      formData, errors: validation.errors, registrations, total, selfPage,
+    });
   }
 
   return next();

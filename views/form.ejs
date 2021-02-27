@@ -1,4 +1,4 @@
-<form method="post" action="/" enctype="application/x-www-form-urlencoded">
+<form class= "form" method="post" action="/" enctype="application/x-www-form-urlencoded">
 
   <div class="field<%= locals.isInvalid('name', errors) ?  ' field--invalid' : '' %>">
     <label for="name">Nafn*</label>
@@ -16,10 +16,9 @@
   </div>
 
   <div class="field field--checkbox<%= locals.isInvalid('anonymous', errors) ?  ' field--invalid' : '' %>">
-    <label for="anonymous">
-      <input type="checkbox" name="anonymous" id="anonymous" <%= formData.anonymous === 'on' ? 'checked' : '' %> class="">
-      Ekki birta nafn á lista
-    </label>
+
+    <input type="checkbox" name="anonymous" id="anonymous" <%= formData.anonymous === 'on' ? 'checked' : '' %> class="">
+    <label for="anonymous"> Ekki birta nafn á lista </label>
   </div>
 
   <% if (errors.length > 0) { %>

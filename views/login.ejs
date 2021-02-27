@@ -2,14 +2,16 @@
 
 <h1>Innskráning</h1>
 
-<form method="post" action="/admin/login">
+<form class="form" method="post" action="/admin/login">
+  <div class="field">
+      <label >Nafn*</label>
+      <input type="text" name="username" id="username" >
 
-      <label class = "something">Nafn*
-        <input type="text" name="username" id="username" class="something">
-      </label>
-      <label class = "something">Lykilorð*
-        <input type="password" name="password" id="password" class="something">
-      </label>
+    </div>
+    <div class="field">
+      <label>Lykilorð*</label>
+      <input type="password" name="password" id="password" >
+    </div>
       <button>Innskrá</button>
   </form>
 

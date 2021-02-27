@@ -1,17 +1,18 @@
     </main>
 
-    <% if (formData.page > 1) { %>
-      <a href="<%= formData.paging.prev.href %>">Fyrri síða</a>
-    <% } else { %>
-      <p></p>
-    <% } %>
-    <p>Síða <%= formData.page %> af <%= Math.round(total.rows[0].count/50) %> </p>
-    <% if (formData.page < total.rows[0].count/50) { %>
-      <a href="<%= formData.paging.next.href %>">Næsta síða</a>
-    <% } else { %>
-      <p></p>
-    <% } %>
-
 </body>
+<div class = footer>
+  <% if (formData.page > 1) { %>
+    <a href="<%= formData.paging.prev.href %>">Fyrri síða</a>
+  <% } else { %>
+    <p></p>
+  <% } %>
+  <p>Síða <%= formData.page %> af <%= Math.round(total.rows[0].count/50) %> </p>
+  <% if (formData.page < total.rows[0].count/50) { %>
+    <a href="<%= formData.paging.next.href %>">Næsta síða</a>
+  <% } else { %>
+    <p></p>
+  <% } %>
+</div>
 </html>
 

@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "nodemon ./src/app.js",
+    "lint:eslint": "eslint ./src --fix",
     "test": "eslint ./src",
     "start": "node ./src/app.js",
     "setup": "node ./src/setup.js"
